@@ -8,11 +8,6 @@ public class Main {
         // Flux example
         Flux<String> flux = Flux.just("Apple", "Banana", "Cherry");
 
-        flux.subscribe(
-                item -> System.out.println("Flux Received: " + item),
-                error -> System.err.println("Flux Error: " + error.getMessage()),
-                () -> System.out.println("Flux Completed")
-        );
         flux
                 .map(fruit -> {
                     if (fruit.equals("Banana")) {
@@ -39,5 +34,18 @@ public class Main {
                 error -> System.err.println("Mono Error: " + error.getMessage()),
                 () -> System.out.println("Mono Completed")
         );
+
+        flux
+                .subscribe(
+                        item -> {
+                            if (item.startsWith("B")) {
+                                throw new RuntimeException("Can't accept Banana");
+                            } else {
+                                System.out.println(item);
+                            }
+                        },
+                        error -> System.err.println("Huge Error in subscription and can't progress: " + error.getMessage()),
+                        () -> System.out.println("Completed")
+                );
     }
 }
